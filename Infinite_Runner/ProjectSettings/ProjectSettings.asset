@@ -4,7 +4,7 @@
 PlayerSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 28
-  productGUID: 3200bfdd59c71b345a15b2adf822269a
+  productGUID: ac23534f72df3964696536aa49108b9e
   AndroidProfiler: 0
   AndroidFilterTouchesWhenObscured: 0
   AndroidEnableSustainedPerformanceMode: 0
@@ -930,10 +930,10 @@ PlayerSettings:
   captureStartupLogs: {}
   activeInputHandler: 2
   windowsGamepadBackendHint: 0
-  cloudProjectId: ce92ad05-853f-44c5-83f4-94e850da5bbc
+  cloudProjectId: a461cfd9-15a5-494e-a5d0-ecf1316636ac
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: Infinite_Runner 2024-11-17_17-41-44
+  projectName: Infinite_Runner 2024-12-04_19-22-24
   organizationId: ioana-manghiuc
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
