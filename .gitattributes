@@ -1,2 +1,0 @@
-Infinite_Runner/Library/** filter=lfs diff=lfs merge=lfs -text
-Infinite_Runner/Assets/** filter=lfs diff=lfs merge=lfs -text

@@ -1,1 +1,1 @@
-# infinite-runner
+# Infinity-Runner
