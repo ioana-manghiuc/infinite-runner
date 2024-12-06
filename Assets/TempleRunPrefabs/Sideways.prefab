@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6153805934963612981}
   - component: {fileID: 6689434456532396991}
-  m_Layer: 3
+  m_Layer: 6
   m_Name: Turn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -66,7 +66,7 @@ GameObject:
   - component: {fileID: 2321152405329592023}
   - component: {fileID: 8850927214282965293}
   - component: {fileID: 4097692310678457393}
-  m_Layer: 3
+  m_Layer: 6
   m_Name: Entry
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -393,7 +393,7 @@ GameObject:
   - component: {fileID: 5442956170591159588}
   - component: {fileID: 4163924903548961238}
   - component: {fileID: 5341697770862133703}
-  m_Layer: 3
+  m_Layer: 6
   m_Name: Sideways
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -732,7 +732,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 837941063547552833}
-  m_Layer: 3
+  m_Layer: 6
   m_Name: Pivot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
