@@ -9,11 +9,13 @@ using Vector3 = UnityEngine.Vector3;
 public class TileSpawner : MonoBehaviour
 {
     [SerializeField]
-    private int _tileStartCount = 10;
+    private const int TileStartCount = 10;
+
     [SerializeField]
-    private int _miniumStraightTile = 3;
+    private const int MinimumStraightTile = 3;
+
     [SerializeField]
-    private int _maximumStraightTile = 15;
+    private const int MaximumStraightTile = 15;
 
     [SerializeField]
     private GameObject _startingTile;
@@ -37,13 +39,13 @@ public class TileSpawner : MonoBehaviour
 
         Random.InitState(System.DateTime.Now.Millisecond);
 
-        for (int i = 0; i < _tileStartCount; i++)
+        for (int i = 0; i < TileStartCount; i++)
         {
             SpawnTile(_startingTile.GetComponent<Tile>());
         }
-        //SpawnTile(SelectRandomGameObject(_turnTiles).GetComponent<Tile>());
-        SpawnTile(_turnTiles[0].GetComponent<Tile>());
-        AddNewDirection(Vector3.left);
+
+        SpawnTile(SelectRandomGameObject(_turnTiles).GetComponent<Tile>());
+        
     }
 
     private void SpawnTile(Tile tile, bool spawnObstacle = false)
@@ -53,8 +55,22 @@ public class TileSpawner : MonoBehaviour
 
         _prevTile = Instantiate(tile.gameObject, _currentTileLocation, newTileRotation);
         _currentTiles.Add(_prevTile);
+
+        if(spawnObstacle)   SpawnObstacle();
+
         if(tile.type == TileType.STRAIGHT)
             _currentTileLocation += Vector3.Scale(_prevTile.GetComponent<Renderer>().bounds.size,_currentTileDirection);
+    }
+
+    private void SpawnObstacle()
+    {
+        if (Random.value > 0.2f) return;
+
+        GameObject obstaclePrefab = SelectRandomGameObject(_obstacles);
+        Quaternion newObjectRotation = obstaclePrefab.gameObject.transform.rotation
+                                       * Quaternion.LookRotation(_currentTileDirection, Vector3.up);
+        GameObject obstacle = Instantiate(obstaclePrefab, _currentTileLocation, newObjectRotation);
+        _currentObstacles.Add(obstacle);
     }
 
     public void AddNewDirection(Vector3 direction)
@@ -81,7 +97,7 @@ public class TileSpawner : MonoBehaviour
 
         _currentTileLocation += tilePlacementScale;
 
-        int currentPathLenght = Random.Range(_miniumStraightTile, _maximumStraightTile);
+        int currentPathLenght = Random.Range(MinimumStraightTile, MaximumStraightTile);
         for(int i = 0; i < currentPathLenght; i++)
         {
             SpawnTile(_startingTile.GetComponent<Tile>(), (i != 0));
@@ -89,11 +105,27 @@ public class TileSpawner : MonoBehaviour
 
         SpawnTile(SelectRandomGameObject(_turnTiles).GetComponent<Tile>());
     }
+
     private GameObject SelectRandomGameObject(List<GameObject> gameObjects)
     {
         if (gameObjects.Count == 0) return null;
         return gameObjects[Random.Range(0, gameObjects.Count)];
     }
+
     private void DeletePreviousTile()
-    {}
+    {
+        while(_currentTiles.Count != 1)
+        {
+            GameObject tile = _currentTiles[0];
+            _currentTiles.RemoveAt(0);
+            Destroy(tile);
+        }
+
+        while (_currentObstacles.Count != 0)
+        {
+            GameObject obstacle = _currentObstacles[0];
+            _currentObstacles.RemoveAt(0);
+            Destroy(obstacle);
+        }
+    }
 }
