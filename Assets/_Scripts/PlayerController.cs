@@ -1,7 +1,4 @@
-using System;
 using System.Collections;
-using System.Globalization;
-using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
@@ -94,9 +91,12 @@ namespace TempleRun.Player
 
         private void PlayerTurn(InputAction.CallbackContext context)
         {
-            var turnPosition = CheckTurn(context.ReadValue<float>());
+            Vector3? turnPosition = CheckTurn(context.ReadValue<float>());
            
-            if (!turnPosition.HasValue) return;
+            if (!turnPosition.HasValue)
+            {
+                return;
+            }
 
             var targetDirection = Quaternion.AngleAxis(90 * context.ReadValue<float>(), Vector3.up)
                 * _movementDirection;
@@ -114,7 +114,7 @@ namespace TempleRun.Player
             while (_controller.enabled == false)
                 _controller.enabled = true;
 
-            var test = Quaternion.Euler(0, 90 * turnValue, 0);
+            //var test = Quaternion.Euler(0, 90 * turnValue, 0);
             Quaternion targetRotation = transform.rotation * Quaternion.Euler(0, 90 * turnValue, 0);
             transform.rotation = targetRotation;
             _movementDirection = transform.forward.normalized;
@@ -123,12 +123,11 @@ namespace TempleRun.Player
 
         private Vector3? CheckTurn(float turnValue)
         {
-            
-            var hitColliders = Physics.OverlapSphere(transform.position, .1f, _turnLayer);
+            Collider[] hitColliders = Physics.OverlapSphere(transform.position, .1f, _turnLayer);
             if (hitColliders.Length != 0)
             {
-                var tile = hitColliders[0].transform.parent.GetComponent<Tile>();
-                var type = tile.type;
+                Tile tile = hitColliders[0].transform.parent.GetComponent<Tile>();
+                TileType type = tile.type;
 
                 if ((type == TileType.LEFT && turnValue == -1)
                     || (type == TileType.RIGHT && turnValue == 1)
