@@ -356,8 +356,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59a8ffd4d09e4854696204d15513b39f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _initialPlayerSpeed: 5
-  _maxiumPlayerSpeed: 10
+  _initialPlayerSpeed: 15
+  _maxiumPlayerSpeed: 70
   _playerSpeedIncreaseRate: 0.01
   _jumpHeight: 1
   _initialGravityValue: -9.8
