@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 
 namespace TempleRun.Player
@@ -206,7 +207,8 @@ namespace TempleRun.Player
 
         private void GameOver()
         {
-            Debug.Log("Game Over");
+            //Debug.Log("Game Over");
+            SceneManager.LoadScene("GameOver");
         }
 
         private void OnControllerColliderHit(ControllerColliderHit hit)

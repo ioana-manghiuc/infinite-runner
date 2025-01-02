@@ -2,13 +2,8 @@ using UnityEngine;
 
 public class SceneHandler : MonoBehaviour
 {
-    void Start()
+    public void LoadScene(string sceneName)
     {
-        
-    }
-
-    void Update()
-    {
-        
+        UnityEngine.SceneManagement.SceneManager.LoadScene(sceneName);
     }
 }
