@@ -2,7 +2,6 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
-using Debug = System.Diagnostics.Debug;
 
 
 namespace TempleRun.Player
@@ -25,10 +24,13 @@ namespace TempleRun.Player
         [SerializeField]
         private LayerMask _turnLayer;
         [SerializeField]
+        private LayerMask _obstacleLayer;
+        [SerializeField]
         private AnimationClip _slidingAnimationClip;
         [SerializeField]
         private Animator _animator;
 
+        [SerializeField]
         private float _playerSpeed;
         private float _gravity;
         private Vector3 _movementDirection = Vector3.forward;
@@ -78,6 +80,12 @@ namespace TempleRun.Player
         }
         private void Update()
         {
+            //if (!IsGrounded(20f)) // CONDITIE DE GAME OVER - NU MERGE
+            //{
+            //    GameOver();
+            //    return;
+            //}
+
             _controller.Move(transform.forward * _playerSpeed * Time.deltaTime);
 
             if (IsGrounded() && _playerVelocity.y < 0)
@@ -95,6 +103,7 @@ namespace TempleRun.Player
            
             if (!turnPosition.HasValue)
             {
+                GameOver();
                 return;
             }
 
@@ -195,6 +204,18 @@ namespace TempleRun.Player
             return false;
         }
 
+        private void GameOver()
+        {
+            Debug.Log("Game Over");
+        }
+
+        private void OnControllerColliderHit(ControllerColliderHit hit)
+        {
+            if ((( 1 << hit.collider.gameObject.layer) & _obstacleLayer) != 0) 
+            {
+                GameOver();
+            }
+        }
 
     }
 }
