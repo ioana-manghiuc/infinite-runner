@@ -1,8 +1,10 @@
+using Assets._Scripts.SaveLoad;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+using UnityEngine.SocialPlatforms.Impl;
 
 
 namespace TempleRun.Player
@@ -30,6 +32,8 @@ namespace TempleRun.Player
         private AnimationClip _slidingAnimationClip;
         [SerializeField]
         private Animator _animator;
+        [SerializeField]
+        private float scoreMultiplier = 10f;
 
         [SerializeField]
         private float _playerSpeed;
@@ -43,14 +47,18 @@ namespace TempleRun.Player
         private InputAction _slideAction;
 
         private CharacterController _controller;
-        
+
+        private ScoreSaver _scoreSaver;
 
         private int _slidingAnimationId;
 
         private bool _sliding = false;
+        private float _score = 0;
 
         [SerializeField]
         private UnityEvent<Vector3> _turnEvent;
+        [SerializeField]
+        private UnityEvent<int> _scoreUpdateEvent;
 
         private void Awake()
         {
@@ -86,6 +94,10 @@ namespace TempleRun.Player
             //    GameOver();
             //    return;
             //}
+
+            _score += scoreMultiplier * Time.deltaTime;
+            _scoreUpdateEvent.Invoke((int)_score);
+
 
             _controller.Move(transform.forward * _playerSpeed * Time.deltaTime);
 
@@ -208,6 +220,8 @@ namespace TempleRun.Player
         private void GameOver()
         {
             //Debug.Log("Game Over");
+            _scoreSaver = FindAnyObjectByType<ScoreSaver>();
+            _scoreSaver.Save();
             SceneManager.LoadScene("GameOver");
         }
 

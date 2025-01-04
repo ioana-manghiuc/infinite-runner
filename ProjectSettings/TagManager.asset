@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 3
   tags:
   - Ground
+  - NewHighScoreCanvas
+  - FinishScoreCanvas
   layers:
   - Default
   - TransparentFX
