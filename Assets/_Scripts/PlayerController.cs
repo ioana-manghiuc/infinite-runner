@@ -142,10 +142,15 @@ namespace TempleRun.Player
         }
         private void PlayerTurn(InputAction.CallbackContext context)
         {
+            
+            
             Vector3? turnPosition = CheckTurn(context.ReadValue<float>());
            
             if (!turnPosition.HasValue)
             {
+                if (IsGrounded())
+                    return;
+
                 GameOver();
                 return;
             }
@@ -155,6 +160,7 @@ namespace TempleRun.Player
             _turnEvent.Invoke(targetDirection);
             Turn(context.ReadValue<float>(), turnPosition.Value);
         }
+
 
         private void Turn(float turnValue, Vector3 turnPosition)
         {

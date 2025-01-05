@@ -12,11 +12,12 @@ public class TileSpawner : MonoBehaviour
     private const int TileStartCount = 7;
 
     [SerializeField]
-    private const int MinimumStraightTile = 15;
+    private const int MinimumStraightTile = 10;
 
     [SerializeField]
-    private const int MaximumStraightTile = 30;
-
+    private const int MaximumStraightTile = 20;
+    [SerializeField]
+    private int MinimumObstacleDistance = 0;
     [SerializeField]
     private GameObject _startingTile;
     [SerializeField] 
@@ -31,6 +32,9 @@ public class TileSpawner : MonoBehaviour
     private List<GameObject> _currentTiles;
     private List<GameObject> _currentObstacles;
 
+    private int currentObstacleDistance = 2;
+    
+
 
     private void Start()
     {
@@ -44,8 +48,11 @@ public class TileSpawner : MonoBehaviour
             SpawnTile(_startingTile.GetComponent<Tile>());
         }
 
-        SpawnTile(SelectRandomGameObject(_turnTiles).GetComponent<Tile>());
-        
+        var turnTile = SelectRandomGameObject(_turnTiles).GetComponent<Tile>();
+
+        SpawnTile(turnTile);
+        SpawnFakeAheadPath(turnTile);
+
     }
 
     private void SpawnTile(Tile tile, bool spawnObstacle = false)
@@ -56,7 +63,15 @@ public class TileSpawner : MonoBehaviour
         _prevTile = Instantiate(tile.gameObject, _currentTileLocation, newTileRotation);
         _currentTiles.Add(_prevTile);
 
-        if(spawnObstacle)   SpawnObstacle();
+        if(spawnObstacle && currentObstacleDistance >MinimumObstacleDistance)
+        {
+            currentObstacleDistance = 0;
+            SpawnObstacle();
+        }
+        else if (spawnObstacle)
+        {
+            currentObstacleDistance++;
+        }
 
         if(tile.type == TileType.STRAIGHT)
             _currentTileLocation += Vector3.Scale(_prevTile.GetComponent<Renderer>().bounds.size,_currentTileDirection);
@@ -64,7 +79,7 @@ public class TileSpawner : MonoBehaviour
 
     private void SpawnObstacle()
     {
-        if (Random.value > 0.2f) return;
+        if (Random.value > 0.5f) return;
 
         GameObject obstaclePrefab = SelectRandomGameObject(_obstacles);
         Quaternion newObjectRotation = obstaclePrefab.gameObject.transform.rotation
@@ -103,7 +118,9 @@ public class TileSpawner : MonoBehaviour
             SpawnTile(_startingTile.GetComponent<Tile>(), (i != 0));
         }
 
-        SpawnTile(SelectRandomGameObject(_turnTiles).GetComponent<Tile>());
+        var turnTile = SelectRandomGameObject(_turnTiles).GetComponent<Tile>();
+        SpawnTile(turnTile);
+        SpawnFakeAheadPath(turnTile);
     }
 
     private GameObject SelectRandomGameObject(List<GameObject> gameObjects)
@@ -128,4 +145,46 @@ public class TileSpawner : MonoBehaviour
             Destroy(obstacle);
         }
     }
+
+    private void SpawnFakeAheadPath(Tile cornerTile)
+    {
+        //Vector3 fakeTileDirection = Vector3.forward;
+        //if (_currentTileDirection == Vector3.forward || _currentTileDirection == Vector3.back)
+        //    fakeTileDirection = Vector3.right;
+        //if(_currentTileDirection == Vector3.right || _currentTileDirection == Vector3.left)
+        //    fakeTileDirection = Vector3.forward;
+
+
+        //if (cornerTile.type is TileType.LEFT or TileType.SIDEWAYS)
+        //{
+        //    for(int i=0;i<10;i++)
+        //    {
+        //        Vector3 tileSize = _prevTile.GetComponent<Renderer>().bounds.size; // Get the size of the tile
+        //        Vector3 offset = new Vector3(-tileSize.x*0.5f*i, 0, 0); // Offset in the upward (y) direction
+        //        Vector3 fakeTileLocation =
+        //            _prevTile.transform.position + offset; // Add the offset to the previous tile's position
+
+        //        Quaternion fakeTileRotation = Quaternion.LookRotation(fakeTileDirection, Vector3.up);
+        //        GameObject fakeTile = Instantiate(_startingTile.gameObject, fakeTileLocation, fakeTileRotation);
+        //        _currentTiles.Insert(0, fakeTile);
+        //    }
+        //}
+        //if (cornerTile.type is TileType.RIGHT or TileType.SIDEWAYS)
+        //{
+        //    for(int i=0;i<10;i++)
+        //    {
+        //        Vector3 tileSize = _prevTile.GetComponent<Renderer>().bounds.size; // Get the size of the tile
+        //        Vector3 offset = new Vector3(tileSize.x*i*.5f, 0, 0); // Offset in the upward (y) direction
+        //        Vector3 fakeTileLocation =
+        //            _prevTile.transform.position + offset; // Add the offset to the previous tile's position
+
+
+        //        Quaternion fakeTileRotation = Quaternion.LookRotation(fakeTileDirection, Vector3.up);
+        //        GameObject fakeTile = Instantiate(_startingTile.gameObject, fakeTileLocation, fakeTileRotation);
+        //        _currentTiles.Insert(0, fakeTile);
+        //    }
+        //}
+    }
 }
+
+
