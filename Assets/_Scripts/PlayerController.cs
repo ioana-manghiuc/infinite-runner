@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
+using UnityEngine.ProBuilder.MeshOperations;
 using UnityEngine.SceneManagement;
 using UnityEngine.SocialPlatforms.Impl;
 
@@ -30,6 +31,11 @@ namespace TempleRun.Player
         private LayerMask _obstacleLayer;
         [SerializeField]
         private AnimationClip _slidingAnimationClip;
+
+        [SerializeField]
+        private AnimationClip _hittingObjectClip1;
+        [SerializeField]
+        private AnimationClip _hittingObjectClip2;
         [SerializeField]
         private Animator _animator;
         [SerializeField]
@@ -51,6 +57,8 @@ namespace TempleRun.Player
         private ScoreSaver _scoreSaver;
 
         private int _slidingAnimationId;
+        private int _hittingObjectAnimation1;
+        private int _hittingObjectAnimation2;
 
         private bool _sliding = false;
         private float _score = 0;
@@ -68,11 +76,15 @@ namespace TempleRun.Player
             _jumpAction = _playerInput.actions["Jump"];
             _slideAction = _playerInput.actions["Slide"];
             _slidingAnimationId = Animator.StringToHash("Sliding");
+            _hittingObjectAnimation1 = Animator.StringToHash("HittingObject1");
+            _hittingObjectAnimation2 = Animator.StringToHash("HittingObject2");
+
         }
         private void Start()
         {
             _playerSpeed = _initialPlayerSpeed;
             _gravity = _initialGravityValue;
+            Random.InitState(System.DateTime.Now.Millisecond);
         }
 
         private void OnEnable()
@@ -89,12 +101,6 @@ namespace TempleRun.Player
         }
         private void Update()
         {
-            //if (!IsGrounded(20f)) // CONDITIE DE GAME OVER - NU MERGE
-            //{
-            //    GameOver();
-            //    return;
-            //}
-
             _score += scoreMultiplier * Time.deltaTime;
             _scoreUpdateEvent.Invoke((int)_score);
 
@@ -222,7 +228,34 @@ namespace TempleRun.Player
             //Debug.Log("Game Over");
             _scoreSaver = FindAnyObjectByType<ScoreSaver>();
             _scoreSaver.Save();
-            SceneManager.LoadScene("GameOver");
+
+            StartCoroutine(HandleGameOver());
+        }
+
+        private IEnumerator HandleGameOver()
+        {
+            yield return StartCoroutine(Falling());
+            SceneManager.LoadScene("GameOver");     
+        }
+        private IEnumerator Falling()
+        {
+            _playerSpeed = 0;
+
+            float animationDuration;
+            int randomChoice = Random.Range(0, 2);
+            if (randomChoice % 2 != 0)
+            {
+                _animator.Play(_hittingObjectAnimation1);
+                animationDuration = _hittingObjectClip1.length;
+            }
+            else
+            {
+                _animator.Play(_hittingObjectAnimation2);
+                animationDuration = _hittingObjectClip2.length;
+            }
+
+            yield return new WaitForSeconds(animationDuration * 0.8f);
+
         }
 
         private void OnControllerColliderHit(ControllerColliderHit hit)

@@ -511,6 +511,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   _slidingAnimationClip: {fileID: 7400000, guid: 46d946af35e12984baf2cee40d97aa18, type: 2}
+  _hittingObjectClip1: {fileID: 0}
+  _hittingObjectClip2: {fileID: 0}
   _animator: {fileID: 1374126449}
   scoreMultiplier: 10
   _playerSpeed: 2
@@ -1118,10 +1120,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59a8ffd4d09e4854696204d15513b39f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _initialPlayerSpeed: 15
+  _initialPlayerSpeed: 0
   _maxiumPlayerSpeed: 70
   _playerSpeedIncreaseRate: 0.01
-  _jumpHeight: 2
+  _jumpHeight: 0.75
   _initialGravityValue: -9.8
   _groundLayer:
     serializedVersion: 2
@@ -1133,6 +1135,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   _slidingAnimationClip: {fileID: 1827226128182048838, guid: 0473e26d90c4a994ead38f256c99c5b9, type: 3}
+  _hittingObjectClip1: {fileID: 7400000, guid: cd8f61280f95aa941ae026f4a7f58dbf, type: 2}
+  _hittingObjectClip2: {fileID: 7400000, guid: 4f8eb9459bdbb5e478087abf1a99a050, type: 2}
   _animator: {fileID: 719987803}
   scoreMultiplier: 10
   _playerSpeed: 2
