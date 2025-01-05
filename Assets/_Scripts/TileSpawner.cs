@@ -9,13 +9,13 @@ using Vector3 = UnityEngine.Vector3;
 public class TileSpawner : MonoBehaviour
 {
     [SerializeField]
-    private const int TileStartCount = 10;
+    private const int TileStartCount = 7;
 
     [SerializeField]
-    private const int MinimumStraightTile = 3;
+    private const int MinimumStraightTile = 15;
 
     [SerializeField]
-    private const int MaximumStraightTile = 15;
+    private const int MaximumStraightTile = 30;
 
     [SerializeField]
     private GameObject _startingTile;
