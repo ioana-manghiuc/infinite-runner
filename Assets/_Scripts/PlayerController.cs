@@ -1,5 +1,6 @@
 using Assets._Scripts.SaveLoad;
 using System.Collections;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
@@ -62,6 +63,7 @@ namespace TempleRun.Player
 
         private bool _sliding = false;
         private float _score = 0;
+        private bool _gameOver = false;
 
         [SerializeField]
         private UnityEvent<Vector3> _turnEvent;
@@ -101,9 +103,14 @@ namespace TempleRun.Player
         }
         private void Update()
         {
+            if (!IsInPlayableArea(20)) // CONDITIE DE GAME OVER - NU MERGE
+            {
+                GameOver();
+                return;
+            }
             _score += scoreMultiplier * Time.deltaTime;
             _scoreUpdateEvent.Invoke((int)_score);
-
+            
 
             _controller.Move(transform.forward * _playerSpeed * Time.deltaTime);
 
@@ -115,7 +122,24 @@ namespace TempleRun.Player
             _controller.Move(_playerVelocity * Time.deltaTime);
         }
 
+        private bool IsInPlayableArea(float length = 0.2f)
+        {
+            bool inTurnArea = false;
 
+            Vector3 raycastOriginFirst = transform.position;
+            raycastOriginFirst.y -= _controller.height / 2f;
+            raycastOriginFirst.y += 0.1f;
+
+            Vector3 raycastOriginSecond = raycastOriginFirst;
+            raycastOriginFirst -= transform.forward * .2f;
+            raycastOriginSecond += transform.forward * .2f;
+
+            if (Physics.Raycast(raycastOriginFirst, Vector3.down, out RaycastHit hit, length, _turnLayer)
+                || Physics.Raycast(raycastOriginSecond, Vector3.down, out RaycastHit hit2, length, _turnLayer))
+                inTurnArea = true;
+
+            return inTurnArea || IsGrounded(length);
+        }
         private void PlayerTurn(InputAction.CallbackContext context)
         {
             Vector3? turnPosition = CheckTurn(context.ReadValue<float>());
@@ -142,7 +166,6 @@ namespace TempleRun.Player
             while (_controller.enabled == false)
                 _controller.enabled = true;
 
-            //var test = Quaternion.Euler(0, 90 * turnValue, 0);
             Quaternion targetRotation = transform.rotation * Quaternion.Euler(0, 90 * turnValue, 0);
             transform.rotation = targetRotation;
             _movementDirection = transform.forward.normalized;
@@ -213,9 +236,6 @@ namespace TempleRun.Player
             raycastOriginFirst -= transform.forward * .2f;
             raycastOriginSecond += transform.forward * .2f;
 
-            // Debug.DrawLine(raycastOriginFirst, Vector3.down, Color.green, 2f);
-            // Debug.DrawLine(raycastOriginSecond, Vector3.down, Color.red, 2f);
-
             if (Physics.Raycast(raycastOriginFirst, Vector3.down, out RaycastHit hit, length, _groundLayer)
                || Physics.Raycast(raycastOriginSecond, Vector3.down, out RaycastHit hit2, length, _groundLayer))
                 return true;
@@ -225,10 +245,11 @@ namespace TempleRun.Player
 
         private void GameOver()
         {
+            if (_gameOver == true) return;
+            _gameOver = true;
             //Debug.Log("Game Over");
             _scoreSaver = FindAnyObjectByType<ScoreSaver>();
             _scoreSaver.Save();
-
             StartCoroutine(HandleGameOver());
         }
 
