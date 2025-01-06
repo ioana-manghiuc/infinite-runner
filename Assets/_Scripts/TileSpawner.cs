@@ -34,8 +34,6 @@ public class TileSpawner : MonoBehaviour
 
     private int currentObstacleDistance = 2;
     
-
-
     private void Start()
     {
         _currentObstacles = new List<GameObject>();

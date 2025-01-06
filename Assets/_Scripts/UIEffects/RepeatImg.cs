@@ -7,7 +7,7 @@ public class RepeatBgk : MonoBehaviour
     void Start()
     {
         startPos = transform.position;
-        repeatWidth = GetComponent<BoxCollider2D>().size.x / 2;
+        repeatWidth = GetComponent<BoxCollider2D>().size.x ;
     }
 
     void Update()
