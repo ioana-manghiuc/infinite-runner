@@ -109,7 +109,6 @@ public class TileSpawner : MonoBehaviour
         }
     }
 
-
     public void AddNewDirection(Vector3 direction)
     {
         _currentTileDirection = direction;
