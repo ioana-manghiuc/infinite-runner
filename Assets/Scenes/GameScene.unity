@@ -157,6 +157,15 @@ MonoBehaviour:
   _obstacles:
   - {fileID: 1887772381221813489, guid: 7acef6c3f1b5d6f45b162045d394132f, type: 3}
   - {fileID: 7602181854675208719, guid: 155f450bb33de2c4f96d377dba80b194, type: 3}
+  _objectsInScene:
+  - {fileID: 4522537107456461547, guid: 7e78c3eb0d17e044f920f2cb85ecc88c, type: 3}
+  - {fileID: 2357403118300381098, guid: 428563101e6d0d14a9b3d1734aac6c7b, type: 3}
+  - {fileID: 2701850113685488679, guid: 0b58bfb09a3163a48b004ddc9a3cdf4f, type: 3}
+  - {fileID: 6514988474726489682, guid: ae32be8fb21155e43b6a8676200cc1bb, type: 3}
+  - {fileID: 1973268181744308885, guid: 537dc08ab7cf4ba489a0bf35b8d7031b, type: 3}
+  - {fileID: 5060596682829054874, guid: ac6f89a39824b7d48bcbbe491aa4a7c6, type: 3}
+  - {fileID: 1179445593872686852, guid: d96434644d68bf245b20cfad2bb62d5d, type: 3}
+  - {fileID: 1031654717077781723, guid: d4eeb3c6e43282f47a7a95b7c811230c, type: 3}
 --- !u!4 &15044544
 Transform:
   m_ObjectHideFlags: 0
