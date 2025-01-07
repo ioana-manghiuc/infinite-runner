@@ -871,7 +871,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _initialPlayerSpeed: 15
   _maxiumPlayerSpeed: 70
-  _playerSpeedIncreaseRate: 0.01
+  _playerSpeedIncreaseRate: 0.3
   _jumpHeight: 1
   _initialGravityValue: -9.8
   _groundLayer:

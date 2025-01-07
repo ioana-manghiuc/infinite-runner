@@ -110,7 +110,7 @@ namespace TempleRun.Player
             }
             _score += scoreMultiplier * Time.deltaTime;
             _scoreUpdateEvent.Invoke((int)_score);
-            
+            _playerSpeed += _playerSpeedIncreaseRate * Time.deltaTime;
 
             _controller.Move(transform.forward * _playerSpeed * Time.deltaTime);
 
