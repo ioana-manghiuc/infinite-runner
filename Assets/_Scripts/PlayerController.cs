@@ -274,7 +274,6 @@ namespace TempleRun.Player
             }
         }
 
-
         private IEnumerator FadeOutSound(AudioSource audioSource, float fadeDuration)
         {
             float startVolume = audioSource.volume;
@@ -300,7 +299,7 @@ namespace TempleRun.Player
 
         private IEnumerator HandleGameOver()
         {
-            StartCoroutine(FadeOutSound(_CameraAS, 1.0f)); 
+            StartCoroutine(FadeOutSound(_CameraAS, 0.7f)); 
             _AS.clip = _hitSFX;
             _AS.Play();
             yield return StartCoroutine(Falling());
