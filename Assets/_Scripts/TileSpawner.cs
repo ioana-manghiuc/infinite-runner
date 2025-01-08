@@ -77,28 +77,61 @@ public class TileSpawner : MonoBehaviour
             currentObstacleDistance++;
         }
 
-        
-
-
         if(tile.type == TileType.STRAIGHT)
         {
             SpawnTree();
             _currentTileLocation +=
                 Vector3.Scale(_prevTile.GetComponent<Renderer>().bounds.size, _currentTileDirection);
         }
+
+        if (tile.type != TileType.STRAIGHT)
+        {
+            SpawnTreesAhead();
+        }
+    }
+
+    private void SpawnTreesAhead()
+    {
+        int treeNUmber = Random.Range(6, 20);
+        for(int _ = 0; _ < treeNUmber; _++)
+        {
+            float xPos = Random.Range(0, 12);
+            float zPos = Random.Range(3.5f, 8);
+            GameObject treePrefab = SelectRandomGameObject(_trees);
+            Vector3 treeOffset = Quaternion.LookRotation(_currentTileDirection, Vector3.up) *
+                                 new Vector3(xPos, 0f, zPos);
+            Vector3 treePosition = _currentTileLocation + treeOffset;
+            GameObject tree = Instantiate(treePrefab, treePosition, Quaternion.identity);
+            _currentTress.Add(tree);
+        }
     }
 
     private void SpawnTree()
     {
-        if (Random.value > 0.6f) return;
-        
-        bool side = Random.value > 0.5f;
-
-        GameObject treePrefab = SelectRandomGameObject(_trees);
-        Vector3 treeOffset = Quaternion.LookRotation(_currentTileDirection, Vector3.up) * new Vector3(side ? -3.5f : 3.5f, 0f, 0f);
-        Vector3 treePosition = _currentTileLocation + treeOffset;
-        GameObject tree = Instantiate(treePrefab, treePosition, Quaternion.identity);
-        _currentTress.Add(tree);
+        int treeNumberRight = Random.Range(1, 10);
+        int treeNumberLeft = Random.Range(1, 10);
+        for (int i = 0; i < treeNumberRight; i++)
+        {
+            float xPos = Random.Range(4.5f, 8);
+            float zPos = Random.Range(0, 10);
+            GameObject treePrefab = SelectRandomGameObject(_trees);
+            Vector3 treeOffset = Quaternion.LookRotation(_currentTileDirection, Vector3.up) *
+                                 new Vector3(-xPos, 0f, zPos);
+            Vector3 treePosition = _currentTileLocation + treeOffset;
+            GameObject tree = Instantiate(treePrefab, treePosition, Quaternion.identity);
+            _currentTress.Add(tree);
+        }
+        for (int i = 0; i < treeNumberLeft; i++)
+        {
+            float xPos = Random.Range(4.5f, 8);
+            float zPos = Random.Range(0, 10);
+            GameObject treePrefab = SelectRandomGameObject(_trees);
+            Vector3 treeOffset = Quaternion.LookRotation(_currentTileDirection, Vector3.up) *
+                                 new Vector3(xPos, 0f, zPos);
+            Vector3 treePosition = _currentTileLocation + treeOffset;
+            GameObject tree = Instantiate(treePrefab, treePosition, Quaternion.identity);
+            _currentTress.Add(tree);
+        }
 
     }
 
