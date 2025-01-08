@@ -168,7 +168,7 @@ MonoBehaviour:
   - {fileID: 1031654717077781723, guid: d4eeb3c6e43282f47a7a95b7c811230c, type: 3}
   _trees:
   - {fileID: 1779090162253299471, guid: 4469fa23356b9dc48a2112397fa1556c, type: 3}
-  - {fileID: 4124323062290505003, guid: f03c0ab1b06c9d0448d1461e21e634f7, type: 3}
+  - {fileID: 4521090229625430784, guid: 874e3a4a755ef9e639594d1f5df968d1, type: 3}
   - {fileID: 4586183935837940532, guid: 95dc0e7071d6b6f40890d31a0b0223c7, type: 3}
 --- !u!4 &15044544
 Transform:
