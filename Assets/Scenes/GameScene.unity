@@ -1018,6 +1018,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  _camera: {fileID: 330585545}
   _SFX: {fileID: 8300000, guid: b63a8f6df33f1a848bc9a4076c1e5915, type: 3}
   _hitSFX: {fileID: 8300000, guid: aa3bfa8be6e4c7c46b835a131f92e272, type: 3}
 --- !u!143 &910106949

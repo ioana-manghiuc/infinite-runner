@@ -69,9 +69,10 @@ namespace TempleRun.Player
         private UnityEvent<Vector3> _turnEvent;
         [SerializeField]
         private UnityEvent<int> _scoreUpdateEvent;
-
+        [SerializeField]
+        private Camera _camera;
         private AudioSource _AS;
-
+        private AudioSource _CameraAS;
         [SerializeField]
         private AudioClip _SFX;
 
@@ -89,12 +90,14 @@ namespace TempleRun.Player
             _hittingObjectAnimation1 = Animator.StringToHash("HittingObject1");
             _hittingObjectAnimation2 = Animator.StringToHash("HittingObject2");
             _AS = GetComponent<AudioSource>();
+            _CameraAS = _camera.GetComponent<AudioSource>();
         }
         private void Start()
         {
             _playerSpeed = _initialPlayerSpeed;
             _gravity = _initialGravityValue;
             Random.InitState(System.DateTime.Now.Millisecond);
+            StartCoroutine(FadeInSound(_CameraAS, 1.0f, 0.6f));
         }
 
         private void OnEnable()
@@ -243,7 +246,6 @@ namespace TempleRun.Player
             _AS.Play();
         }
 
-
         private bool IsGrounded(float length = .2f)
         {
             Vector3 raycastOriginFirst = transform.position;
@@ -260,6 +262,32 @@ namespace TempleRun.Player
 
             return false;
         }
+        private IEnumerator FadeInSound(AudioSource audioSource, float fadeDuration, float targetVolume = 1.0f)
+        {
+            audioSource.volume = 0f; 
+            audioSource.Play();      
+
+            while (audioSource.volume < targetVolume)
+            {
+                audioSource.volume += targetVolume * Time.deltaTime / fadeDuration;
+                yield return null;
+            }
+        }
+
+
+        private IEnumerator FadeOutSound(AudioSource audioSource, float fadeDuration)
+        {
+            float startVolume = audioSource.volume;
+
+            while (audioSource.volume > 0)
+            {
+                audioSource.volume -= startVolume * Time.deltaTime / fadeDuration;
+                yield return null;
+            }
+
+            audioSource.Stop(); 
+            audioSource.volume = startVolume;
+        }
 
         private void GameOver()
         {
@@ -272,6 +300,7 @@ namespace TempleRun.Player
 
         private IEnumerator HandleGameOver()
         {
+            StartCoroutine(FadeOutSound(_CameraAS, 1.0f)); 
             _AS.clip = _hitSFX;
             _AS.Play();
             yield return StartCoroutine(Falling());
