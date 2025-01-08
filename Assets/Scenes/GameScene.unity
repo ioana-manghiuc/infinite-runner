@@ -166,6 +166,10 @@ MonoBehaviour:
   - {fileID: 5060596682829054874, guid: ac6f89a39824b7d48bcbbe491aa4a7c6, type: 3}
   - {fileID: 1179445593872686852, guid: d96434644d68bf245b20cfad2bb62d5d, type: 3}
   - {fileID: 1031654717077781723, guid: d4eeb3c6e43282f47a7a95b7c811230c, type: 3}
+  _trees:
+  - {fileID: 1779090162253299471, guid: 4469fa23356b9dc48a2112397fa1556c, type: 3}
+  - {fileID: 4124323062290505003, guid: f03c0ab1b06c9d0448d1461e21e634f7, type: 3}
+  - {fileID: 4586183935837940532, guid: 95dc0e7071d6b6f40890d31a0b0223c7, type: 3}
 --- !u!4 &15044544
 Transform:
   m_ObjectHideFlags: 0
