@@ -1,12 +1,15 @@
 using Assets._Scripts.SaveLoad;
 using System.Collections;
+using System.Security.Cryptography;
 using System.Threading;
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using UnityEngine.ProBuilder.MeshOperations;
 using UnityEngine.SceneManagement;
 using UnityEngine.SocialPlatforms.Impl;
+using UnityEngine.UI;
 
 
 namespace TempleRun.Player
@@ -64,6 +67,7 @@ namespace TempleRun.Player
         private bool _sliding = false;
         private float _score = 0;
         private bool _gameOver = false;
+        private bool _isPaused = false;
 
         [SerializeField]
         private UnityEvent<Vector3> _turnEvent;
@@ -79,8 +83,17 @@ namespace TempleRun.Player
         [SerializeField]
         private AudioClip _hitSFX;
 
+        [SerializeField]
+        private Canvas _AudioCanvas;
+        [SerializeField] AudioMixer _mixer;
+        [SerializeField]
+        private Slider _soundtrackSlider;
+        [SerializeField]
+        private Slider _sfxSlider;
+
         private void Awake()
         {
+            LoadVolume();
             _playerInput = GetComponent<PlayerInput>();
             _controller = GetComponent<CharacterController>();
             _turnAction = _playerInput.actions["Turn"];
@@ -94,10 +107,12 @@ namespace TempleRun.Player
         }
         private void Start()
         {
+            LoadVolume();
             _playerSpeed = _initialPlayerSpeed;
             _gravity = _initialGravityValue;
             Random.InitState(System.DateTime.Now.Millisecond);
-            StartCoroutine(FadeInSound(_CameraAS, 1.0f, 0.6f));
+            StartCoroutine(FadeInSound(_CameraAS, PlayerPrefs.GetFloat(VolumeSettings.SOUNDTRACK_KEY, 1f), 0.6f));
+            _AudioCanvas.gameObject.SetActive(false);
         }
 
         private void OnEnable()
@@ -114,23 +129,47 @@ namespace TempleRun.Player
         }
         private void Update()
         {
-            if (!IsInPlayableArea(20)) // CONDITIE DE GAME OVER - NU MERGE
+            if (!IsInPlayableArea(20)) 
             {
                 GameOver();
                 return;
             }
-            _score += scoreMultiplier * Time.deltaTime;
-            _scoreUpdateEvent.Invoke((int)_score);
-            _playerSpeed += _playerSpeedIncreaseRate * Time.deltaTime;
-
-            _controller.Move(transform.forward * _playerSpeed * Time.deltaTime);
-
-            if (IsGrounded() && _playerVelocity.y < 0)
+            if (!_isPaused && !_gameOver) 
             {
-                _playerVelocity.y = 0f;
+                _score += scoreMultiplier * Time.deltaTime;
+                _scoreUpdateEvent.Invoke((int)_score);
+                _playerSpeed += _playerSpeedIncreaseRate * Time.deltaTime;
+                _controller.Move(transform.forward * _playerSpeed * Time.deltaTime);
+                if (IsGrounded() && _playerVelocity.y < 0)
+                {
+                    _playerVelocity.y = 0f;
+                }
+                _playerVelocity.y += _gravity * Time.deltaTime;
+                _controller.Move(_playerVelocity * Time.deltaTime);
             }
-            _playerVelocity.y += _gravity * Time.deltaTime;
-            _controller.Move(_playerVelocity * Time.deltaTime);
+
+            if (Input.GetKey(KeyCode.P) && !_isPaused)
+            {
+                _AudioCanvas.gameObject.SetActive(true);
+                _isPaused = true;
+            }
+            else if (Input.GetKey(KeyCode.L) && _isPaused)
+            {
+                if(_soundtrackSlider.value == 0 || _sfxSlider.value == 0)
+                {
+                    PlayerPrefs.SetFloat(VolumeSettings.MIXER_SOUNDTRACK, -80);
+                    PlayerPrefs.SetFloat(VolumeSettings.MIXER_SFX, -80);
+                }
+                else
+                {
+                    PlayerPrefs.SetFloat(VolumeSettings.MIXER_SOUNDTRACK, Mathf.Log10(_soundtrackSlider.value) * 20);
+                    PlayerPrefs.SetFloat(VolumeSettings.MIXER_SFX, Mathf.Log10(_sfxSlider.value) * 20);
+                }
+                _AudioCanvas.gameObject.SetActive(false);
+                _isPaused = false;
+            }
+
+            LoadVolume();
         }
 
         private bool IsInPlayableArea(float length = 0.2f)
@@ -169,7 +208,6 @@ namespace TempleRun.Player
             _turnEvent.Invoke(targetDirection);
             Turn(context.ReadValue<float>(), turnPosition.Value);
         }
-
 
         private void Turn(float turnValue, Vector3 turnPosition)
         {
@@ -210,6 +248,7 @@ namespace TempleRun.Player
             {
                 StartCoroutine(Slide());
                 _AS.clip = _SFX;
+                _AS.volume = PlayerPrefs.GetFloat(VolumeSettings.SFX_KEY, 1f);
                 _AS.Play();
             }
         }
@@ -243,6 +282,7 @@ namespace TempleRun.Player
             _playerVelocity.y += Mathf.Sqrt(_jumpHeight * _gravity * -3f);
             _controller.Move(_playerVelocity * Time.deltaTime);
             _AS.clip = _SFX;
+            _AS.volume = PlayerPrefs.GetFloat(VolumeSettings.SFX_KEY, 1f); 
             _AS.Play();
         }
 
@@ -333,6 +373,19 @@ namespace TempleRun.Player
                 GameOver();
             }
         }
+        void LoadVolume()
+        {
+            float soundtrackVolume = PlayerPrefs.GetFloat(VolumeSettings.SOUNDTRACK_KEY, 1f);
+            float sfxVolume = PlayerPrefs.GetFloat(VolumeSettings.SFX_KEY, 1f);
+            if(soundtrackVolume != 0)
+                _mixer.SetFloat(VolumeSettings.MIXER_SOUNDTRACK, Mathf.Log10(soundtrackVolume) * 20);
+            else
+                _mixer.SetFloat(VolumeSettings.MIXER_SOUNDTRACK, -80);
 
+            if(sfxVolume != 0)
+                _mixer.SetFloat(VolumeSettings.MIXER_SFX, Mathf.Log10(sfxVolume) * 20);
+            else
+                _mixer.SetFloat(VolumeSettings.MIXER_SFX, -80);
+        }
     }
 }
