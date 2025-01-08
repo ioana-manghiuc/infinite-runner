@@ -17,7 +17,7 @@ public class TileSpawner : MonoBehaviour
     [SerializeField]
     private const int MaximumStraightTile = 20;
     [SerializeField]
-    private int MinimumObstacleDistance = 0;
+    private int MinimumObstacleDistance = 1;
     [SerializeField]
     private GameObject _startingTile;
     [SerializeField] 
@@ -26,6 +26,8 @@ public class TileSpawner : MonoBehaviour
     private List<GameObject> _obstacles;
     [SerializeField]
     private List<GameObject> _objectsInScene;
+    [SerializeField]
+    private List<GameObject> _trees;
 
     private Vector3 _currentTileLocation = Vector3.zero;
     private Vector3 _currentTileDirection = Vector3.forward;
@@ -33,6 +35,7 @@ public class TileSpawner : MonoBehaviour
 
     private List<GameObject> _currentTiles;
     private List<GameObject> _currentObstacles;
+    private List<GameObject> _currentTress;
 
     private int currentObstacleDistance = 2;
     
@@ -40,6 +43,7 @@ public class TileSpawner : MonoBehaviour
     {
         _currentObstacles = new List<GameObject>();
         _currentTiles = new List<GameObject>();
+        _currentTress = new List<GameObject>();
 
         Random.InitState(System.DateTime.Now.Millisecond);
 
@@ -73,13 +77,34 @@ public class TileSpawner : MonoBehaviour
             currentObstacleDistance++;
         }
 
+        
+
+
         if(tile.type == TileType.STRAIGHT)
-            _currentTileLocation += Vector3.Scale(_prevTile.GetComponent<Renderer>().bounds.size,_currentTileDirection);
+        {
+            SpawnTree();
+            _currentTileLocation +=
+                Vector3.Scale(_prevTile.GetComponent<Renderer>().bounds.size, _currentTileDirection);
+        }
+    }
+
+    private void SpawnTree()
+    {
+        if (Random.value > 0.6f) return;
+        
+        bool side = Random.value > 0.5f;
+
+        GameObject treePrefab = SelectRandomGameObject(_trees);
+        Vector3 treeOffset = Quaternion.LookRotation(_currentTileDirection, Vector3.up) * new Vector3(side ? -3.5f : 3.5f, 0f, 0f);
+        Vector3 treePosition = _currentTileLocation + treeOffset;
+        GameObject tree = Instantiate(treePrefab, treePosition, Quaternion.identity);
+        _currentTress.Add(tree);
+
     }
 
     private void SpawnObstacle()
     {
-        if (Random.value > 0.5f) return;
+        if (Random.value > 0.35f) return;
 
         GameObject obstaclePrefab = SelectRandomGameObject(_obstacles);
         Quaternion newObjectRotation = obstaclePrefab.gameObject.transform.rotation
@@ -163,6 +188,13 @@ public class TileSpawner : MonoBehaviour
             GameObject obstacle = _currentObstacles[0];
             _currentObstacles.RemoveAt(0);
             Destroy(obstacle);
+        }
+
+        while (_currentTress.Count != 0)
+        {
+            GameObject tree = _currentTress[0];
+            _currentTress.RemoveAt(0);
+            Destroy(tree);
         }
     }
 }
