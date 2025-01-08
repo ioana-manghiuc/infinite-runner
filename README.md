@@ -8,7 +8,7 @@ This project generates an endless track for the runner, as well as obstacles to 
 - _score_ : calculated and stored in PlayerPrefs. It stores the score of the last game, the highest score, and the previous highest score. This way, if the player obtains a new high score, upon the game's end, the user will see the previous high score as well as the fact that they achieved a new one.
 - _collision detection_ : if the fox collides with an obstacle, an animation and sound effect are played, and then the Game Over scene is loaded which is accompanied by a sound effect. The player will see the score they obtained in the run, and has the option to **_Retry_** or **_Exit_** to the Game Start scene.
 - _game start_ : when the game is started, a soundtrack is faded in. When/If a collision occurs, the soundtrack is faded out smoothly.
-- _audio_ : a menu to toggle the volume can be opened using the **P** key, and closed using the **L** key. In this menu the user can change the soundtrack music and the SFX music
+- _audio_ : a menu to toggle the volume can be opened using the **P** key, and closed using the **L** key. In this menu the user can change the soundtrack music and the SFX music, and these values are stored in PlayerPrefs.
 - _skybox_, in which our scene is placed
 
 **Assets used:**
