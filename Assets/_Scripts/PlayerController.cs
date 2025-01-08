@@ -70,6 +70,14 @@ namespace TempleRun.Player
         [SerializeField]
         private UnityEvent<int> _scoreUpdateEvent;
 
+        private AudioSource _AS;
+
+        [SerializeField]
+        private AudioClip _SFX;
+
+        [SerializeField]
+        private AudioClip _hitSFX;
+
         private void Awake()
         {
             _playerInput = GetComponent<PlayerInput>();
@@ -80,7 +88,7 @@ namespace TempleRun.Player
             _slidingAnimationId = Animator.StringToHash("Sliding");
             _hittingObjectAnimation1 = Animator.StringToHash("HittingObject1");
             _hittingObjectAnimation2 = Animator.StringToHash("HittingObject2");
-
+            _AS = GetComponent<AudioSource>();
         }
         private void Start()
         {
@@ -142,8 +150,6 @@ namespace TempleRun.Player
         }
         private void PlayerTurn(InputAction.CallbackContext context)
         {
-            
-            
             Vector3? turnPosition = CheckTurn(context.ReadValue<float>());
            
             if (!turnPosition.HasValue)
@@ -197,8 +203,12 @@ namespace TempleRun.Player
 
         private void PlayerSlide(InputAction.CallbackContext context)
         {
-            if(!_sliding && IsGrounded())
+            if (!_sliding && IsGrounded())
+            {
                 StartCoroutine(Slide());
+                _AS.clip = _SFX;
+                _AS.Play();
+            }
         }
 
         private IEnumerator Slide()
@@ -229,6 +239,8 @@ namespace TempleRun.Player
             if (!IsGrounded()) return;
             _playerVelocity.y += Mathf.Sqrt(_jumpHeight * _gravity * -3f);
             _controller.Move(_playerVelocity * Time.deltaTime);
+            _AS.clip = _SFX;
+            _AS.Play();
         }
 
 
@@ -253,7 +265,6 @@ namespace TempleRun.Player
         {
             if (_gameOver == true) return;
             _gameOver = true;
-            //Debug.Log("Game Over");
             _scoreSaver = FindAnyObjectByType<ScoreSaver>();
             _scoreSaver.Save();
             StartCoroutine(HandleGameOver());
@@ -261,13 +272,15 @@ namespace TempleRun.Player
 
         private IEnumerator HandleGameOver()
         {
+            _AS.clip = _hitSFX;
+            _AS.Play();
             yield return StartCoroutine(Falling());
             SceneManager.LoadScene("GameOver");     
         }
         private IEnumerator Falling()
         {
             _playerSpeed = 0;
-
+            
             float animationDuration;
             int randomChoice = Random.Range(0, 2);
             if (randomChoice % 2 != 0)
